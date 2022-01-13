@@ -7,14 +7,12 @@
 rm -f /tmp/max.dat
 rm -f /tmp/length.dat
 
-for n in {1..10000}; do
+for n in {2...10000}; do
 
 	echo -n $n >> /tmp/max.dat
 	echo " " >> /tmp/max.dat 
 	./collatz -n $n | sort -n | tail -n 1 >> /tmp/max.dat	
 
-	echo -n $n >> /tmp/length.dat
-	echo " " >> /tmp/length.dat
         ./collatz -n $n | wc -l >> /tmp/length.dat
 
 done
