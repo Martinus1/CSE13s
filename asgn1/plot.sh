@@ -6,6 +6,7 @@
 
 rm -f /tmp/max.dat
 rm -f /tmp/length.dat
+rm -f /tmp/histogram.dat
 
 for n in {2...10000}; do
 
@@ -14,7 +15,8 @@ for n in {2...10000}; do
 	./collatz -n $n | sort -n | tail -n 1 >> /tmp/max.dat	
 
         ./collatz -n $n | wc -l >> /tmp/length.dat
-
+	
+	./collatz -n $n | wc -l >> /tmp/histogram.dat
 done
 
 # This is the heredoc that is sent to gnuplot.
@@ -30,7 +32,6 @@ gnuplot <<END
     plot "/tmp/max.dat" with dots title ""
 END
 
-
 gnuplot <<END
     set terminal pdf
     set output "length.pdf"
@@ -40,4 +41,12 @@ gnuplot <<END
     plot "/tmp/length.dat" with dots title ""
 END
 
-
+gnuplot <<END
+    set terminal pdf
+    set output "histogram.pdf"
+    set title "Collatz Sequence Lengths Histogram"
+    set xlabel "n"
+    set ylabel "lengths"
+    set style fill solid 1
+    plot "/tmp/histogram.dat" smooth freq with boxes
+END
