@@ -1,19 +1,23 @@
 cc = clang
 CFLAGS = -Wall -Wextra -Werror -Wpedantic
 
-.PHONY: all
+.PHONY: all clean
 
-all: functions
+all: integrate
 
-functions: functions.o
-	$(CC) -o functions.o
+integrate: integrate.o functions.o mathlib.o
+	$(CC) functions.o integrate.o mathlib.o -o integrate
 
-functions.o: functions.c
-	$(CC) $(CFLAGS) -c functions.c
+functions.o: functions.c functions.h 
+	$(CC) $(CFLAGS) -c functions.c -o functions.o
 
+integrate.o: integrate.c
+	$(CC) $(CFLAGS) -c integrate.c -o integrate.o
+
+mathlib.o: mathlib.c mathlib.h
+	$(CC) $(CFLAGS) -c mathlib.c -o mathlib.o
 
 clean:
 	rm -f functions funtions.o
+	rm -f integrate integrate.o
 
-format:
-	clang-format -i -style=file *.{c,h}
