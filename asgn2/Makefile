@@ -8,8 +8,7 @@ all: integrate
 integrate: integrate.o functions.o mathlib.o
 	$(CC) functions.o integrate.o mathlib.o -o integrate
 
-functions.o: functions.c functions.h 
-	$(CC) $(CFLAGS) -c functions.c -o functions.o
+
 
 integrate.o: integrate.c
 	$(CC) $(CFLAGS) -c integrate.c -o integrate.o
