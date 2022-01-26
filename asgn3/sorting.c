@@ -23,12 +23,11 @@ typedef enum {
 int main(int argc, char **argv) {
 	
 	uint32_t n = 100;
-	int seed = 13371453;
-	
+	int seed = 13371453;	
 	Set s = empty_set();
 	
 	int opt = 0;
-	while((opt = getopt(argc, argv, "ahbiq:r:n:p:H")) != -1 ) {
+	while((opt = getopt(argc, argv, "ahbiqr:n:p:H")) != -1 ) {
 		switch (opt) { 
 			case 'a':
 				s = complement_set(empty_set());
@@ -46,7 +45,6 @@ int main(int argc, char **argv) {
 				s = insert_set(QUICK, s);
 				break;
 			case 'r':
-				srand(time(NULL));
 				seed = rand();
 				break;
 			case 'n':
@@ -64,13 +62,13 @@ int main(int argc, char **argv) {
 
 
 	uint32_t *A = (uint32_t *)malloc(n * sizeof(uint32_t));
-
+	srandom(seed);
 	for (uint32_t i = 0; i < n; i += 1) {
-		A[i] =  rand();
+		uint32_t val = random();
+		uint32_t mask = 0x3fffffff;
+		A[i] = (val & mask);
 	}
 
-	free(A);
-	
 	Stats record;
 	record.moves = 0;
 	record.compares = 0;
@@ -85,14 +83,62 @@ int main(int argc, char **argv) {
 					printf("%lu moves, ", record.moves);
 					printf("%lu compares, \n ", record.compares);
 					for(uint32_t v = 0; v < n; v ++) {
-						printf("%u     ", A[i]);
+						printf("%u     ", A[v]);
+						if (((v + 1) % 5 == 0)) {
+							printf("\n");
+						}
 					}
+
+					printf("\n");
+					
 					break;
 				case HEAP:
+					heap_sort(&record, A, n);
+					printf("Heap Sort, ");
+                                        printf("%u elements, ", n);
+                                        printf("%lu moves, ", record.moves);
+                                        printf("%lu compares, \n ", record.compares);
+                                       	for(uint32_t v = 0; v < n; v ++) {
+                                                printf("%u     ", A[v]);
+                                                if (((v + 1) % 5 == 0)) {
+                                                        printf("\n");
+                                                }
+                                        }
+
+                                        printf("\n");
+
+
 					break;
 				case QUICK:
+	                                quick_sort(&record, A, n);
+                                        printf("Quick Sort, ");
+                                        printf("%u elements, ", n);
+                                        printf("%lu moves, ", record.moves);
+                                        printf("%lu compares, \n ", record.compares);
+                                        for(uint32_t v = 0; v < n; v ++) {
+                                                printf("%u     ", A[v]);
+                                                if (((v + 1) % 5 == 0)) {
+                                                        printf("\n");
+                                                }
+                                        }
+
+                                        printf("\n"); 
 					break;
 				case BATCH:
+                                        batcher_sort(&record, A, n);
+                                        printf("Batcher Sort, ");
+                                        printf("%u elements, ", n);
+                                        printf("%lu moves, ", record.moves);
+                                        printf("%lu compares, \n ", record.compares);
+                                        for(uint32_t v = 0; v < n; v ++) {
+                                        	printf("%u \t", A[v]);
+                                        	if (((v + 1) % 5 == 0)) {
+							printf("\n");
+						}
+					}
+
+
+					printf("\n");
 					break;
 				default:
 					break;
@@ -100,6 +146,6 @@ int main(int argc, char **argv) {
 		}
 	
 	}
-
+	free(A);
 }
 
