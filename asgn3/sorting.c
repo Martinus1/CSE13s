@@ -11,6 +11,8 @@
 #include "set.h"
 #include "stats.h"
 
+
+//universal enum/set for sort types
 typedef enum {
 	INSERT = 0,
 	HEAP = 1,
@@ -18,6 +20,25 @@ typedef enum {
 	BATCH = 3
 } Sort;
 
+
+void usage() {
+    printf("SYNOPSIS \n"
+	" Collection of comparison-based algortihms \n"
+       "\n"
+      " USAGE \n"
+     " ./sorting [-Haibhqn:p:r:] [-n length] [-p element] [-r seed]  \n "
+     "\n"
+    " OPTIONS \n"
+   " -a shows integration of all sorts \n"
+   " -H display Help and usage \n "
+   "-i Enable Insertion Sort \n" 
+   "-b Enable Batcher Sort \n"
+   " -h Enable Heap Sort \n"
+   " -q Enable Quick Sort \n"
+   "-r Enables random seed for random number generator \n"
+  " -n [length] number of array element, default = 100 \n "
+  "-p [elements] low low integral starting poin. \n");
+}
 
 
 int main(int argc, char **argv) {
@@ -30,32 +51,42 @@ int main(int argc, char **argv) {
 	while((opt = getopt(argc, argv, "ahbiqr:n:p:H")) != -1 ) {
 		switch (opt) { 
 			case 'a':
+				//all sets are selected
 				s = complement_set(empty_set());
 				break;
 			case 'h':
+				//Heap sort selected
 				s = insert_set(HEAP, s);
 				break;
 			case 'b':
+				//batch sort Selected
 				s = insert_set(BATCH, s);
 				break;
 			case 'i':
+				//insertion sort Selected
 				s = insert_set(INSERT, s);
 				break;
 			case 'q':
+				//quick sort Selected
 				s = insert_set(QUICK, s);
 				break;
 			case 'r':
+				// randomize seed
 				seed = rand();
 				break;
 			case 'n':
+				//number of elements in an array
 				n = atoi(optarg);
 				break;
 			case 'p':
+				//Specify Number of elements to print
 				break;
 			case 'H':
-				break;
+				//Show help
+				usage();
+				return EXIT_FAILURE;
 			default:
-				fprintf(stderr, "error/n");
+				usage();
 				return 1;
 		}
 	}
@@ -70,13 +101,14 @@ int main(int argc, char **argv) {
 	}
 
 	Stats record;
-	record.moves = 0;
-	record.compares = 0;
-
+	reset(&record);
+	
+	//Below is the directl implementation of the sorting algorithms into my program
 	for (Sort i = INSERT; i <= BATCH; i += 1) {
 		if(member_set(i, s)) {
 			switch(i) {
 				case INSERT:
+					reset(&record);
 					insertion_sort(&record, A, n);
 					printf("Insertion Sort, ");
 					printf("%u elements, ", n);
@@ -93,6 +125,7 @@ int main(int argc, char **argv) {
 					
 					break;
 				case HEAP:
+					reset(&record);
 					heap_sort(&record, A, n);
 					printf("Heap Sort, ");
                                         printf("%u elements, ", n);
@@ -110,6 +143,7 @@ int main(int argc, char **argv) {
 
 					break;
 				case QUICK:
+					reset(&record);
 	                                quick_sort(&record, A, n);
                                         printf("Quick Sort, ");
                                         printf("%u elements, ", n);
@@ -125,6 +159,7 @@ int main(int argc, char **argv) {
                                         printf("\n"); 
 					break;
 				case BATCH:
+					reset(&record);
                                         batcher_sort(&record, A, n);
                                         printf("Batcher Sort, ");
                                         printf("%u elements, ", n);

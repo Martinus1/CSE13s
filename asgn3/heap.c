@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "heap.h"
+#include "stats.h"
+ 
+//This is the implementation of the HEAP sorting algorithm
+//This algorithm algoritm sorts the values in the array in accordace to heaps, therefore steps, which are intended to check the n-adjacency of a value
 
-  
 int max_child(uint32_t *A, int first, int last){
 	int left = 2 * first;
 	int right = left + 1;
@@ -40,11 +43,11 @@ void heap_sort(Stats *stats, uint32_t *A, uint32_t n) {
 	int first = 1;
 	int last = n;
 	build_heap(A, first, last);
-	stats -> compares += 1;
-	for (int leaf = last; leaf < first; leaf -= 1 ) {
-		uint32_t temp = A[first - 1];
-		A[first - 1] = A[leaf - 1];
-		A[leaf - 1] = temp;
+	for (int leaf = last; cmp(stats, first, leaf) > 0; leaf -= 1 ) {
+		//uint32_t temp = A[first - 1];
+		swap(stats, &A[leaf - 1], &A[first - 1]);
+		//A[first - 1] = A[leaf - 1];
+		//A[leaf - 1] = temp;
 		fix_heap(A, first, leaf - 1);
 	}
 }

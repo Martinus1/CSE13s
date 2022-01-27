@@ -5,20 +5,23 @@ CFLAGS = -Wall -Wextra -Werror -Wpedantic -g
 
 all: sorting
 
-sorting: sorting.o batcher.o heap.o insert.o quick.o
-	$(CC) sorting.o batcher.o heap.o insert.o quick.o   -o sorting
+sorting: sorting.o batcher.o heap.o insert.o quick.o stats.o
+	$(CC) sorting.o batcher.o heap.o insert.o quick.o stats.o -o sorting
 
-bathcher.o: batcher.c batcher.h
-	$(CC) $(CFLAGS) -c batcher.c -o bathcer.o
+bathcher.o: batcher.c batcher.h stats.h
+	$(CC) $(CFLAGS) -c batcher.c -o bathcher.o
 
-heap.o: heap.c heap.h
+heap.o: heap.c heap.h stats.h
 	$(CC) $(CFLAGS) -c heap.c -o heap.o 
 
-insert.o: insert.c insert.h
+insert.o: insert.c insert.h stats.h
 	$(CC) $(CFLAGS) -c insert.c -o insert.o
 
-quick.o: quick.c quick.h
+quick.o: quick.c quick.h stats.h
 	$(CC) $(CFLAGS) -c quick.c -o quick.o
+
+stats.o: stats.c stats.h
+	$(CC) $(CFLAGS) -c stats.c -o stats.o
 
 clean:
 	rm -f sorting sorting.o
