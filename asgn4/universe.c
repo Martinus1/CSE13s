@@ -15,9 +15,9 @@ struct Universe {
 
 Universe *uv_create(uint32_t rows, uint32_t cols, bool toroidal) {
 	//Create a universe
-	bool **matrix = (bool **) calloc(rows, sizeof(bool));
+	bool **matrix = (bool **) calloc(rows, sizeof(bool *));
 	for (uint32_t r = 0; r < rows; r += 1) {
-		matrix[r] = (bool *) calloc(cols , sizeof(bool));
+		matrix[r] = (bool *) calloc(cols, sizeof(bool));
 	}
 
 	Universe *u = (Universe *)malloc(sizeof(Universe));
@@ -47,7 +47,7 @@ uint32_t uv_cols(Universe *u) {
 void uv_live_cell(Universe *u, uint32_t r, uint32_t c) {
 	//Marks cell at row -‘r’ , and column - ‘c’ as live
 	if ((r < (u->rows)) && (c < (u->cols))) {
-		u->grid[r][c] = true;
+		u->grid[r][c] = 1;
 	}
 }
 
@@ -55,7 +55,7 @@ void uv_live_cell(Universe *u, uint32_t r, uint32_t c) {
 void uv_dead_cell(Universe *u, uint32_t r, uint32_t c) {
 	//This function marks the cell of row -‘r’ , and column - ‘c’ as dead
 	if ((r < uv_rows(u)) && (c < uv_cols(u))) {
-		u->grid[r][c] = false;
+		u->grid[r][c] = 0;
 	} else {
 		printf("Invalid Cell");
 	}
@@ -74,27 +74,27 @@ bool uv_populate(Universe *u, FILE *infile) {
 	//This is the caller function and will populate the Universe with row-column pairs 
 	int rowsc, colsc;	
 	fscanf(infile, "%d %d\n", &rowsc, &colsc);
-        bool **grd = u->grid;
-
+        
 	//assigns false to all values in the array
         for (int i = 0; i < rowsc; i+= 1) {
                 for (int j = 0; j < colsc; j += 1) {
-                       grd[i][j] = false;
+                       uv_dead_cell(u, i, j);
                 }
         }
 	//assigns true to the values specified in the file
 
-	//int r, c;
-	//while (fscanf(infile, "%d %d\n", &r, &c) != EOF) {
+	int r, c;
+	while (fscanf(infile, "%d %d\n", &r, &c) != EOF) {
 		//fscanf(infile, "%d %d\n", &r, &c);
-	//	grd[r][c] = true;
-	//}
-	
-	for (int i = 0; i < rowsc; i+= 1) {
-              	for (int j = 0; j < colsc; j += 1) {
-                      	printf("%d ", grd[i][j]); 
-                }
-        }
+		uv_live_cell(u, r, c);
+	}
+		
+	//for (int i = 0; i < rowsc; i+= 1) {
+              //	for (int j = 0; j < colsc; j += 1) {
+            //          	printf("%d ", u->grid[i][j]); 
+          //      }
+        //}
+
 	return true;
 }
 
@@ -104,22 +104,40 @@ uint32_t uv_census(Universe *u, uint32_t r, uint32_t c) {
 	uint32_t alive = 0;
 	//uint32_t rowsc = uv_rows(u);
 	//uint32_t colsc = uv_cols(u);
-	bool ** grd = u->grid;
+	bool **grd = u->grid;
 
-	//Normal
-	for(uint32_t i=r-1; i<=r; i+= 1) {
-       		 for(uint32_t j=c-1;j<=c;j+= 1) {
-           		if((i==r && j==c) || (i>=r || j>=c)) {
-           		     continue;
-            		}
+	
+	if (u->toroidal == true) {
+	 //Normal
+		for(uint32_t i=r-1; i<=r; i+= 1) {
+       			 for(uint32_t j=c-1;j<=c;j+= 1) {
+           			if((i==r && j==c) || (i>=r || j>=c)) {
+           		     		continue;
+            			}
 			 
-            		if(grd[i][j]==1) {
-                		alive += 1;
-            		}
-        	}
-    	}
+            			if(grd[i][j]==1) {
+                			alive += 1;
+            			}
+        		}
+    		}
+	} else {
 
-	//Torioidal
+	//Toroidal
+	
+		for(uint32_t i=r-1; i<=r; i+=1 ) {
+			for(uint32_t j=c-1; j<=c; j += 1) {
+				//if top right
+				//if top left
+				//if bottom right
+				//if bottom right
+				//if top
+				//if bottom
+				//if left
+				//if right
+			}
+		}	
+	
+	}
 	return alive;
 }
 
@@ -127,7 +145,7 @@ void uv_print(Universe *u, FILE *outfile) {
 	//Prints the universe in an ‘outfile’
 	uint32_t rowsc = uv_rows(u);
 	uint32_t colsc = uv_cols(u);
-	bool ** grd = u->grid;
+	bool **grd = u->grid;
 	for (uint32_t i = 0; i < rowsc; i+= 1) {
 		for (uint32_t j = 0; j < colsc; j += 1) {
 			if (grd[i][j] == true) {
