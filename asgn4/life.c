@@ -19,7 +19,8 @@ int main(int argc, char **argv) {
         bool isNcurses = true;
         int opt = 0;
 	char *ifile;
-	//char ofile;
+	bool out_print = false;
+	char *ofile;
 
         while((opt = getopt(argc, argv, "tsn:i:o:")) != -1 ) {
                 switch (opt) {
@@ -40,8 +41,9 @@ int main(int argc, char **argv) {
 				ifile = optarg;				
                                 break;
                         case 'o':
-                                //specifies the output file to print the final state of the universe
-                   		//ofile = atoi(optarg);
+                		//specifies the output file to print the final state of the universe
+                		out_print = true;
+				ofile = optarg;
 		   		break;
                         default:
                                 return 1;
@@ -59,9 +61,6 @@ int main(int argc, char **argv) {
 
         uv_populate(u, file);
 	uv_populate(b, file);
-        
-	//printf("%d\n", uv_cols(u));
-       // printf("%d\n", uv_rows(u));
 		
  	if (isNcurses == true) {
                 initscr();
@@ -79,31 +78,33 @@ int main(int argc, char **argv) {
 				int alive = uv_census(u, r, c);
 				
 				bool state = uv_get_cell(u,r,c);
-				fprintf(stdout, "POS = %d %d", r, c);
-				fprintf(stdout, " state: %d",state);
-				fprintf(stdout, " alive n = %d \n", alive);
+				//Below I commened out the prints I used to test the program, 
+				//as well as the ones that print out the cell state
+				//fprintf(stdout, "POS = %d %d", r, c);
+				//fprintf(stdout, " state: %d",state);
+				//fprintf(stdout, " alive n = %d \n", alive);
 
 				if (state == true) {
 				//Cell is alive
 					if ((alive == 2) || (alive == 3)) {
 						//Cell survives
 						uv_live_cell(b, r ,c);
-						fprintf(stdout, "Survives\n");
+						//fprintf(stdout, "Survives\n");
 					} else {
 						//Cell Dies
 						uv_dead_cell(b, r, c);
-						fprintf(stdout, "Dies\n");
+						//fprintf(stdout, "Dies\n");
 					}
 				} else if (state == false) {
 				//Cell is dead
 					if (alive == 3) {
 						//Bring to life
 						uv_live_cell(b,r,c);
-						fprintf(stdout,"Becomes Alive\n");
+						//fprintf(stdout,"Becomes Alive\n");
 					} else {
 						//stays dead
 						fprintf(stdout, "Stays Dead\n");
-						uv_dead_cell(b ,r ,c);
+						//uv_dead_cell(b ,r ,c);
 					}
 				}	
 			}
@@ -111,17 +112,14 @@ int main(int argc, char **argv) {
 		
 		uint32_t rowsc = uv_rows(u);
 		uint32_t colsc = uv_cols(u);
-		//bool **grd = u->grid;
+		//Generate the output of the live cells on the screen
 		for (uint32_t p = 0; p < rowsc; p+= 1) {
 			for (uint32_t j = 0; j < colsc; j += 1) {
 				bool state = uv_get_cell(u, p, j);
 				if (state == true) {
 					mvprintw(p, j, "o");
-				} else if (state == false) {
-					//fprintf(outfile, "%s", ".");
 				}
 			}
-			//fprintf(outfile, "\n");
 		}
 
 		//Swap Universes		
@@ -135,8 +133,17 @@ int main(int argc, char **argv) {
 		}
 		
 	}
+
 	endwin();
-	uv_print(u, stdout);
+	if (out_print == true) {
+		//print the last universe state in the 'output' file
+		FILE *outfile = fopen(ofile, "w");
+		uv_print(u,outfile);
+		fclose(outfile);
+	} else {
+		//by default prints the last universe state in console
+		uv_print(u, stdout);
+	}
 	uv_delete(u);
 	uv_delete(b);
         fclose(file);

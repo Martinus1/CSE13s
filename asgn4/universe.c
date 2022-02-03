@@ -107,8 +107,8 @@ uint32_t uv_census(Universe *u, uint32_t r, uint32_t c) {
 
 	if (u->toroidal == false) {
 	 //Normal
-		for(int i=r-1; i<=row + 1; i+= 1) {
-       			 for(int j=c-1;j<=col + 1;j+= 1) {
+		for(int i=row-1; i<=row + 1; i+= 1) {
+       			 for(int j=col-1;j<=col + 1;j+= 1) {
 				if ((i==row && j==col) || (i>=rowsc) ||(j>=colsc) || ((j < 0) || (i < 0))) {
            		     		continue;
             			}	
@@ -123,8 +123,8 @@ uint32_t uv_census(Universe *u, uint32_t r, uint32_t c) {
 
 	//Toroidal
 	
-		for(uint32_t i=r-1; i<=r; i+=1 ) {
-			for(uint32_t j=c-1; j<=c; j += 1) {
+		for(int i=row-1; i<=row + 1; i+=1 ) {
+			for(int j=col-1; j<=col + 1; j += 1) {
 				//if top right
 				//if top left
 				//if bottom right
@@ -133,6 +133,14 @@ uint32_t uv_census(Universe *u, uint32_t r, uint32_t c) {
 				//if bottom
 				//if left
 				//if right
+				
+				if (i==row && j==col) {
+					continue;
+				}
+				
+				if(grd[(i + rowsc) % rowsc][(j + colsc) % colsc] == 1) {
+					alive += 1;
+				}
 			}
 		}	
 	
