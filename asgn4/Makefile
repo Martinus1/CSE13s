@@ -1,4 +1,4 @@
-cc = clang
+cc = clang-format -i -style=file*.[c,h]
 CFLAGS = -Wall -Wextra -Werror -Wpedantic -g
 
 .PHONY: all clean
@@ -13,4 +13,4 @@ universe.o: universe.c universe.h
 
 clean:
 	rm -f life life.o
-
+	rm -f universe.o
