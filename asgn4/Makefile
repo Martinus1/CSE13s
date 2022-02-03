@@ -1,7 +1,10 @@
-cc = clang-format -i -style=file*.[c,h]
+cc = clang-format
 CFLAGS = -Wall -Wextra -Werror -Wpedantic -g
 
 .PHONY: all clean
+
+format:
+	clang-format -i -style=file *[c,h]
 
 all: life
 
