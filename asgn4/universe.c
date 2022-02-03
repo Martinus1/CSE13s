@@ -72,12 +72,14 @@ bool uv_get_cell(Universe *u, uint32_t r, uint32_t c) {
 
 bool uv_populate(Universe *u, FILE *infile) {
 	//This is the caller function and will populate the Universe with row-column pairs 
-	int rowsc, colsc;	
-	fscanf(infile, "%d %d\n", &rowsc, &colsc);
-        
+	uint32_t rowsc, colsc;	
+	//fscanf(infile, "%d %d\n", &rowsc, &colsc);
+        rowsc = uv_rows(u);
+	colsc = uv_cols(u);
+
 	//assigns false to all values in the array
-        for (int i = 0; i < rowsc; i+= 1) {
-                for (int j = 0; j < colsc; j += 1) {
+        for (int i = 0; (uint32_t)i < rowsc; i+= 1) {
+                for (int j = 0; (uint32_t)j < colsc; j += 1) {
                        uv_dead_cell(u, i, j);
                 }
         }
@@ -88,12 +90,6 @@ bool uv_populate(Universe *u, FILE *infile) {
 		//fscanf(infile, "%d %d\n", &r, &c);
 		uv_live_cell(u, r, c);
 	}
-		
-	//for (int i = 0; i < rowsc; i+= 1) {
-              //	for (int j = 0; j < colsc; j += 1) {
-            //          	printf("%d ", u->grid[i][j]); 
-          //      }
-        //}
 
 	return true;
 }
@@ -102,22 +98,25 @@ uint32_t uv_census(Universe *u, uint32_t r, uint32_t c) {
 	//This function returns the number of live neighbors adjacent to the cell as row ‘r’ and column ‘c’.
 	
 	uint32_t alive = 0;
-	//uint32_t rowsc = uv_rows(u);
-	//uint32_t colsc = uv_cols(u);
+	int rowsc = (int)uv_rows(u);
+	int colsc = (int)uv_cols(u);
 	bool **grd = u->grid;
-
 	
-	if (u->toroidal == true) {
+	int row = (int) r;
+	int col = (int) c;
+
+	if (u->toroidal == false) {
 	 //Normal
-		for(uint32_t i=r-1; i<=r; i+= 1) {
-       			 for(uint32_t j=c-1;j<=c;j+= 1) {
-           			if((i==r && j==c) || (i>=r || j>=c)) {
+		for(int i=r-1; i<=row + 1; i+= 1) {
+       			 for(int j=c-1;j<=col + 1;j+= 1) {
+				if ((i==row && j==col) || (i>=rowsc) ||(j>=colsc) || ((j < 0) || (i < 0))) {
            		     		continue;
-            			}
-			 
+            			}	
+
             			if(grd[i][j]==1) {
                 			alive += 1;
             			}
+				
         		}
     		}
 	} else {
@@ -149,7 +148,7 @@ void uv_print(Universe *u, FILE *outfile) {
 	for (uint32_t i = 0; i < rowsc; i+= 1) {
 		for (uint32_t j = 0; j < colsc; j += 1) {
 			if (grd[i][j] == true) {
-				fprintf(outfile, "%s", "0");
+				fprintf(outfile, "%s", "o");
 			} else if (grd[i][j] == false) {
 				fprintf(outfile, "%s", ".");
 			}
@@ -157,3 +156,4 @@ void uv_print(Universe *u, FILE *outfile) {
 		fprintf(outfile, "\n");
 	}
 }
+

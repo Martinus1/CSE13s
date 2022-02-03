@@ -13,10 +13,13 @@
 
 int main(int argc, char **argv) {
 
-        uint32_t n = 100;
+       
+    	uint32_t n = 100;
         bool isToroidal = false;
         bool isNcurses = true;
         int opt = 0;
+	char *ifile;
+	//char ofile;
 
         while((opt = getopt(argc, argv, "tsn:i:o:")) != -1 ) {
                 switch (opt) {
@@ -34,71 +37,109 @@ int main(int argc, char **argv) {
                                 break;
                         case 'i':
                                 //specifies the read file in order to populate the universe
-
+				ifile = optarg;				
                                 break;
                         case 'o':
                                 //specifies the output file to print the final state of the universe
-                                break;
+                   		//ofile = atoi(optarg);
+		   		break;
                         default:
                                 return 1;
                 }
         }
 
-        
-	if (isNcurses == true) {
-	initscr();
-	curs_set(FALSE);
-	}
-
-	FILE *file = fopen("dat.dat", "r");
+	FILE *file = fopen(ifile, "r");
 
 	uint64_t row, col;
 	fscanf(file, "%" SCNu64 "%" SCNu64 "\n", &row, &col);
-        Universe *u = uv_create(row, col, isToroidal);
+        //Main universe
+	Universe *u = uv_create(row, col, isToroidal);
+	//Next screen universe
+	Universe *b = uv_create(row, col ,isToroidal);
 
         uv_populate(u, file);
-        //printf("%d\n",uv_cols(u));
-        //printf("%d\n",uv_rows(u));
+	uv_populate(b, file);
+        
+	//printf("%d\n", uv_cols(u));
+       // printf("%d\n", uv_rows(u));
+		
+ 	if (isNcurses == true) {
+                initscr();
+                curs_set(FALSE);
+        }
 
 	for(uint32_t i = 0; i < n; i+= 1) {
 		if(isNcurses == true) {
 			clear();
 		}
-
 		//create screen + play game
-		for(uint32_t r = 0; r < rows; r += 1) {
+		for(uint32_t r = 0; r < row; r += 1) {
+			
 			for(uint32_t c = 0; c < col; c+=1 ) {
-				int alive = uv_censes(u, r, c);
+				int alive = uv_census(u, r, c);
 				
 				bool state = uv_get_cell(u,r,c);
-				
+				fprintf(stdout, "POS = %d %d", r, c);
+				fprintf(stdout, " state: %d",state);
+				fprintf(stdout, " alive n = %d \n", alive);
+
 				if (state == true) {
 				//Cell is alive
-					if (alive == 2) || (alive == 3) {
+					if ((alive == 2) || (alive == 3)) {
 						//Cell survives
+						uv_live_cell(b, r ,c);
+						fprintf(stdout, "Survives\n");
 					} else {
 						//Cell Dies
-						uv_dead_cell(u, r, c);
+						uv_dead_cell(b, r, c);
+						fprintf(stdout, "Dies\n");
 					}
 				} else if (state == false) {
+				//Cell is dead
 					if (alive == 3) {
-						uv_live_cell(u,r,c);
+						//Bring to life
+						uv_live_cell(b,r,c);
+						fprintf(stdout,"Becomes Alive\n");
+					} else {
+						//stays dead
+						fprintf(stdout, "Stays Dead\n");
+						uv_dead_cell(b ,r ,c);
 					}
 				}	
 			}
 		}	
-
-		uv_print(u, )
 		
+		uint32_t rowsc = uv_rows(u);
+		uint32_t colsc = uv_cols(u);
+		//bool **grd = u->grid;
+		for (uint32_t p = 0; p < rowsc; p+= 1) {
+			for (uint32_t j = 0; j < colsc; j += 1) {
+				bool state = uv_get_cell(u, p, j);
+				if (state == true) {
+					mvprintw(p, j, "o");
+				} else if (state == false) {
+					//fprintf(outfile, "%s", ".");
+				}
+			}
+			//fprintf(outfile, "\n");
+		}
+
+		//Swap Universes		
+      		Universe *temp = u;
+                u = b;
+                b = temp;
+
 		if(isNcurses == true) {
 			refresh();
 			usleep(DELAY);
 		}
+		
 	}
-	uv_print(u, stdout);
 	endwin();
+	uv_print(u, stdout);
 	uv_delete(u);
+	uv_delete(b);
         fclose(file);
-	
+
 	return 0;
 }
