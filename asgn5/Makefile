@@ -1,5 +1,5 @@
 cc = clang-format
-CFLAGS = -Wall -Wextra -Werror -Wpedantic -g
+CFLAGS = -Wall -Wextra -Werror -Wpedantic -g  $(shell pkg-config --cflags gmp)
 LFLAGS = $(shell pkg-config --libs gmp)
 
 .PHONY: all clean
