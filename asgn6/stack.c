@@ -4,7 +4,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct Stack Stack;
+typedef struct Stack Stack {
+	uint32_t top;
+	uint32_t capacity;
+	Node **items;
+};
 
 Stack *stack_create(uint32_t capacity) {
 	Stack *s = (Stack *) malloc(sizeof(Stack)); 
@@ -15,7 +19,9 @@ Stack *stack_create(uint32_t capacity) {
 
 void stack_delete(Stack **s) {
 	if(*s) {
-                free(*s);
+		free(*s->capacity);
+                free(*s->top);
+		free(*s);
                 *s = NULL;
         }
         return;
@@ -24,7 +30,7 @@ void stack_delete(Stack **s) {
 bool stack_empty(Stack *s) {
 	//stack empty = true
         //else false
-	if (s == NULL) {
+	if ((s->top) == -1) {
 		return true;
 	} else {
 		return false;
@@ -35,30 +41,43 @@ bool stack_full(Stack *s) {
 	//stack full = true
 	//else false
 	
-	if (s) {
+	if (s->top == s->capacity - 1) {
 		return true;
 	} else {
 		return false;
 	}
-
 }
 
 uint32_t stack_size(Stack *s) {
 	//return number of nodes in the stack
-	return ;
+	return sizeof(s->top + 1);
 }
 
 bool stack_push(Stack *s, Node *n) {
 	//pushes a node onto the stack
 	//return false is stack is full prior to pushing the node
 	//otherwise return true
-	
+	if(stack_full(s)) {
+		return false;
+	} else {
+		//CITE: Geeks for Geeks
+		s->items[s->top++] = n;
+		return true;
+	}
 }
 
 bool stack_pop(Stack *s, Node **n) {
 	//pops a node off the stack passing it back through double pointer n
-	//return false is stack is full prior to pushing the nde
+	//return false is stack is empty prior to poping the node
         //otherwise return true
+	
+	if (stack_empty(s)) {
+		return false;
+	} else {
+		//CITE: Geeks for Geeks
+		n = s->items[stack->top--];
+		return true;
+	}
 }
 
 void stack_print(Stack *s) {

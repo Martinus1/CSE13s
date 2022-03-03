@@ -22,13 +22,17 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
 
 void node_delete(Node **n) {
         //Node Destructor
-        free(n->symbol);
-        free(n->);
-        free(n);
+	if (*n) {
+        	free((*n)->symbol);
+        	free((*n)->frequency);
+			free(*n);
+		*n = NULL;
+	}
 }
 
 Node *node_join(Node *left, Node *right) {
 	//Join Left and Right children and return parent node
+	//Returns pointer to created parent node
 	Node *n = (Node *) malloc(sizeof(Node));
 	n->left = left;
 	n->right = right;

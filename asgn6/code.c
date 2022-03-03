@@ -27,7 +27,7 @@ uint32_t code_size(Code *c) {
 bool code_empty(Code *c) {
 	//true if code is empty
 	//false otherwise
-	if (c == NULL) {
+	if (code_size(c) == 0) {
 		return true;
 	} else {
 		return false;
@@ -37,8 +37,7 @@ bool code_empty(Code *c) {
 bool code_full(Code *c) {
         //true if code is full
         //false otherwise
-	
-	if (c) {
+	if (code_size(c) == MAX_CODE_SIZE) {
 		return true;
 	} else {
 		return false;
@@ -50,10 +49,14 @@ bool code_set_bit(Code *c, uint32_t i) {
 	//set the bit at index i in the Code to 1
 	//if i is out of range return false
 	//otherwise return true
-	if() {
 	
+	//uint8_t mask = 1LL << (8 - i)
+	
+	if(i > ALPHABET) {
+		return false;
 	} else {
-	
+		c->bits[i/8] |= (0x1 << i % 8);
+		return true;
 	}
 
 }
@@ -62,14 +65,27 @@ bool code_clr_bit(Code *c, uint32_t i) {
 	//clears the bit at index i, setting it to 0
 	//If i is out of range return false
 	//otherwise return true
-	
+	if(i > ALPHABET) {
+                return false;
+        } else {
+                c->bits[i/8] |= (0x0 << i % 8);
+                return true;
+        }
+
 }
 
 bool code_get_bit(Code *c, uint32_t i) {
 	//Get the bit at index i in the Code
 	//If i if Out of Range or if bit is 0 return false
 	//true if bit i == 1
-	//b[i/8] |= (0x1 << i % 8);
+	uint32_t n = c->bits[i/8];
+	uint32_t bit = (n & (1 << i)) >> i;
+	
+	if (bit == 1) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 bool code_push_bit(Code *c, uint8_t bit) {
@@ -80,7 +96,8 @@ bool code_push_bit(Code *c, uint8_t bit) {
 	if (code_full(c) == true) {
 		return false;
 	} else {
-
+		uint32_t n = c->bits[i/8];
+        	uint32_t bit = (n & (1 << i)) >> i;
 		return true;
 	}
 }
@@ -89,7 +106,12 @@ bool code_pop_bit(Code *c, uint8_t *bit) {
 	//pop bit off the Code
 	//value of popped bit is passed back with pointed bit
 	//return false if the Code is empty prior to popping a bit and true otherwise
-	
+	if (code_empty(c) == true) {
+		return false;
+	} else {
+
+		return true;
+	}
 }
 
 void code_print(Code *c) {
