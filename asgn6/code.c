@@ -1,8 +1,9 @@
-#pragma once
-
 #include "defines.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include "code.h"
 
 typedef struct {
     uint32_t top;
@@ -21,13 +22,13 @@ Code code_init(void) {
 
 uint32_t code_size(Code *c) {
 	//Return the size of the Code -> number of bits pushed onto the code
-	return sizeof(c->bits);
+	return c->top;
 }
 
 bool code_empty(Code *c) {
 	//true if code is empty
 	//false otherwise
-	if (code_size(c) == 0) {
+	if (c->top == 0) {
 		return true;
 	} else {
 		return false;
@@ -96,8 +97,11 @@ bool code_push_bit(Code *c, uint8_t bit) {
 	if (code_full(c) == true) {
 		return false;
 	} else {
-		uint32_t n = c->bits[i/8];
-        	uint32_t bit = (n & (1 << i)) >> i;
+		//uint32_t n = c->bits[c->top/8];
+        	//bit = (n & (1 << i)) >> i;
+		//Source DISCORD Prof. Long
+		c->bits[c->top/8] |= (bit << (c->top % 8));
+		c->top = (c->top + 1);
 		return true;
 	}
 }
@@ -109,7 +113,11 @@ bool code_pop_bit(Code *c, uint8_t *bit) {
 	if (code_empty(c) == true) {
 		return false;
 	} else {
-
+		c->top = (c->top - 1);
+		uint32_t n = c->bits[c->top / 8];
+		*bit = (n >> (c->top % 8) & 0x1);
+		//Source DISCORD Prof. Long
+		c->bits[c->top / 8] &= ~(0x1 << (c->top % 8));;
 		return true;
 	}
 }

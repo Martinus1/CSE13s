@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Source: Discord Prof. Long
 typedef struct PriorityQueue PriorityQueue {
 	uint32_t size;
 	uint32_t head, tail;
@@ -18,7 +19,7 @@ PriorityQueue *pq_create(uint32_t capacity) {
 	pq->size = 0;
 	pq->head = 0;
 	pq->tail = 0;
-	pq->Q[capacity] = {}; 
+	pq->Q = (Node **) calloc(capacity, sizeof(Node *)); 
 
         return pq;
 }
@@ -48,6 +49,8 @@ bool pq_empty(PriorityQueue *q) {
 
 bool pq_full(PriorityQueue *q) {
 	// Return true is struct is full false otherwise
+	
+	//TEST unsure(!!!)		
 	if (q->size == sizeof(q)) {
 		return true;
 	} else {
@@ -93,14 +96,12 @@ bool dequeue(PriorityQueue *q, Node **n) {
 		return false;	
 	} else {
 		q->size -= 1;
-		n = &q->Q[0];
+		*n = q->Q[0];
+		
 		return true;
 	}
 }
 
 void pq_print(PriorityQueue *q) {
 	//Print priority queue info for debug
-	for(PriorityQueue *qu = q; qu != NULL; qu = qu->next) {
-		printf("%s\n", curr->key);
-	}
 }

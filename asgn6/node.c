@@ -1,6 +1,10 @@
 #pragma once
 
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <inttypes.h>
+
 
 typedef struct Node Node;
 
@@ -16,6 +20,8 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
         Node *n = (Node *) malloc(sizeof(Node));
         n->frequency = frequency;
         n->symbol = symbol;
+	n->left = NULL;
+	n->right = NULL;
 
         return n;
 }

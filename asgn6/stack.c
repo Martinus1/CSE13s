@@ -12,8 +12,9 @@ typedef struct Stack Stack {
 
 Stack *stack_create(uint32_t capacity) {
 	Stack *s = (Stack *) malloc(sizeof(Stack)); 
+	s->top = 0;
 	s->capacity = capacity;
-
+	s->items = (Node **) calloc(capacity, sizeof(Node *));
 	return s;
 }
 
@@ -21,6 +22,7 @@ void stack_delete(Stack **s) {
 	if(*s) {
 		free(*s->capacity);
                 free(*s->top);
+		free(*s->items);
 		free(*s);
                 *s = NULL;
         }
@@ -41,7 +43,7 @@ bool stack_full(Stack *s) {
 	//stack full = true
 	//else false
 	
-	if (s->top == s->capacity - 1) {
+	if (s->top == s->capacity) {
 		return true;
 	} else {
 		return false;
@@ -50,7 +52,7 @@ bool stack_full(Stack *s) {
 
 uint32_t stack_size(Stack *s) {
 	//return number of nodes in the stack
-	return sizeof(s->top + 1);
+	return s->top;
 }
 
 bool stack_push(Stack *s, Node *n) {
