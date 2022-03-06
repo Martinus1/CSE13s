@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include "node.h"
 
 typedef struct Node Node;
 
