@@ -70,8 +70,7 @@ bool enqueue(PriorityQueue *q, Node *n) {
         uint32_t lowFrequency = UINT32_MAX;
         int index = 0;
         for (int i = 0; i <= q->size; i++) {
-            if (q->Q[i]->frequency < lowFrequency) {
-
+            if (q->Q[i] && q->Q[i]->frequency < lowFrequency) {
                 lowFrequency = q->Q[i]->frequency;
                 index = i;
             }
@@ -100,5 +99,4 @@ bool dequeue(PriorityQueue *q, Node **n) {
 
 void pq_print(PriorityQueue *q) {
     //Print priority queue info for debug
-
 }
