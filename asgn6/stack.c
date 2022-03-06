@@ -1,6 +1,5 @@
-#pragma once
-
 #include "node.h"
+#include "stack.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>

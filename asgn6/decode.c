@@ -37,24 +37,25 @@ int main(int argc, char **argv) {
             isHelp = true;
             break;
         }
-
-        //Print Help
-        if (isHelp == true) {
-            fprintf(stderr, "SYNOPSIS:\n");
-            fprintf(stderr, "---USAGE---\n");
-            fprintf(stderr, "./decode [options]\n");
-            fprintf(stderr, " -i   Specifies the input file\n");
-            fprintf(stderr, " -o   Specifies the output file\n");
-            fprintf(stderr, " -v   prints compression statistics to stderr\n");
-            fprintf(stderr, " -h   prints program synopsis\n");
-        }
-
-        //Print Verbose output
-        if (isVerbose == true) {
-            /* fprintf(stderr, "Compressed file is %d bytes\n", ); */
-            /* fprintf(stderr, "Normal file is %d bytes\n", ); */
-        }
-
-        FILE *infile = fopen(in_file, "r");
-        FILE *outfile = fopen(out_file, "w");
     }
+
+    //Print Help
+    if (isHelp == true) {
+        fprintf(stderr, "SYNOPSIS:\n");
+        fprintf(stderr, "---USAGE---\n");
+        fprintf(stderr, "./decode [options]\n");
+        fprintf(stderr, " -i   Specifies the input file\n");
+        fprintf(stderr, " -o   Specifies the output file\n");
+        fprintf(stderr, " -v   prints compression statistics to stderr\n");
+        fprintf(stderr, " -h   prints program synopsis\n");
+    }
+
+    //Print Verbose output
+    if (isVerbose == true) {
+        /* fprintf(stderr, "Compressed file is %d bytes\n", ); */
+        /* fprintf(stderr, "Normal file is %d bytes\n", ); */
+    }
+
+    FILE *infile = fopen(in_file, "r");
+    FILE *outfile = fopen(out_file, "w");
+}
