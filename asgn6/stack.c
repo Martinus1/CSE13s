@@ -3,8 +3,13 @@
 #include "node.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
 
-typedef struct Stack Stack {
+typedef struct Stack Stack;
+
+struct Stack {
     uint32_t top;
     uint32_t capacity;
     Node **items;
@@ -20,9 +25,7 @@ Stack *stack_create(uint32_t capacity) {
 
 void stack_delete(Stack **s) {
     if (*s) {
-        free(*s->capacity);
-        free(*s->top);
-        free(*s->items);
+        free((*s)->items);
         free(*s);
         *s = NULL;
     }
@@ -77,7 +80,7 @@ bool stack_pop(Stack *s, Node **n) {
         return false;
     } else {
         //CITE: Geeks for Geeks
-        n = s->items[stack->top--];
+        n = &s->items[s->top--];
         return true;
     }
 }
