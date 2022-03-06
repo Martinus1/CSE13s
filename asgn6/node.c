@@ -28,9 +28,7 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
 void node_delete(Node **n) {
     //Node Destructor
     if (*n) {
-        free((*n)->symbol);
-        free((*n)->frequency);
-        free(*n);
+        free(n);
         *n = NULL;
     }
 }
@@ -44,12 +42,12 @@ Node *node_join(Node *left, Node *right) {
     n->symbol = '$';
     n->frequency = ((left->frequency) + (right->frequency));
 
-    return *n;
+    return n;
 }
 
 void node_print(Node *n) {
     //Debug Function
     printf("Debug Node \n");
-    printf("Node symbol: %u\n ", symbol);
-    printf("Node frequency: %u\n ", frequency);
+    printf("Node symbol: %u\n ", n->symbol);
+    printf("Node frequency: %lu\n ", n->frequency);
 }

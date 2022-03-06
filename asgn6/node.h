@@ -1,4 +1,4 @@
-void node_print(Node *n);#pragma once
+#pragma once
 
 #include <stdint.h>
 
