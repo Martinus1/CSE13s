@@ -7,7 +7,9 @@
 #include <stdlib.h>
 
 //Source: Discord Prof. Long
-typedef struct PriorityQueue PriorityQueue {
+typedef struct PriorityQueue PriorityQueue;
+
+struct PriorityQueue {
     uint32_t size;
     uint32_t head, tail;
     Node **Q;
@@ -28,11 +30,8 @@ void pq_delete(PriorityQueue **q) {
     //destructor for priority queue
     //Set pointer to Null after freeing the memory
     if (*q) {
-        free(*q->size);
-        free(*q->tail);
-        free(*q->head);
-        free(*q->Q);
-        free(*q);
+        free((*q)->Q);
+        free(q);
         *q = NULL;
     }
     return;
@@ -73,16 +72,15 @@ bool enqueue(PriorityQueue *q, Node *n) {
         uint32_t lowFrequency = UINT32_MAX;
         int index = 0;
         for (int i = 0; i <= q->size; i++) {
-            if (q->Q[i]->freqency < lowFrequency) {
+            if (q->Q[i]->frequency < lowFrequency) {
 
-                lowFrequency = Q[i]->frequency;
+                lowFrequency = q->Q[i]->frequency;
                 index = i;
             }
         }
 
         //Move everything forward after the index;
-
-        q->Q[index] = &n;
+        q->Q[index] = n;
 
         return true;
     }
