@@ -1,5 +1,3 @@
-#pragma once
-
 #include "code.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -8,13 +6,14 @@
 
 extern uint64_t bytes_read;
 extern uint64_t bytes_written;
+extern uint64_t bits_read, bits_added;
 
 int read_bytes(int infile, uint8_t *buf, int nbytes) {
     //BEHAVIOR
     //---Reads all bites and returns how many bites have been read
     bytes_read = 0;
     int is_reading = 0;
-    while (bytes_read == nbytes || is_reading == -1) {
+    while (bytes_read == (uint64_t) nbytes || is_reading == -1) {
         is_reading = read(infile, buf, nbytes);
         if (is_reading >= 1) {
             bytes_read += is_reading;
@@ -32,7 +31,7 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     //---why? This is becauuse it takes a long time to access the disk, so we don't need to waste time acessing it multiple times
     bytes_written = 0;
     int is_writing = 0;
-    while (bytes_written == nbytes || is_writing == -1) {
+    while (bytes_written == (uint64_t) nbytes || is_writing == -1) {
         is_writing = write(outfile, buf, nbytes);
         if (is_writing >= 1) {
             bytes_written += is_writing;
@@ -49,31 +48,23 @@ bool read_bit(int infile, uint8_t *bit) {
     //Read a block of bytes into a buffer and dole out bits one at a time
     uint8_t buffer[BLOCK];
     //gets the length of the file periodically
-    int p = -1;
-    if (bits_read == 0) {
+    uint64_t file_length = UINT_LEAST64_MAX;
+
+    if (bits_read < file_length) {
         //This sets the bytes_read
         read_bytes(infile, buffer, BLOCK);
 
+        //This should return the one bit
+        *bit = (buffer[bits_read / 8] >> (bits_read % 8) & 0x1);
+        bits_read = (((bits_read) + 1) % (8 * BLOCK));
+
         if (bytes_read < BLOCK) {
-            p = (bytes_read * 8) + 1;
+            file_length = (bytes_read * 8) + 1;
+            return false;
         }
-
-        //SOURCE: Discord Prof. Long
-        //This should return the one bit
-        *bit = (buffer[bits_read / 8] >> (bits_read % 8) & 0x1);
-        bits_read = (((bits_read) + 1) % (8 * BLOCK));
-    } else {
-        //SOURCE: Discord Prof. Long
-        //This should return the one bit
-        *bit = (buffer[bits_read / 8] >> (bits_read % 8) & 0x1);
-        bits_read = (((bits_read) + 1) % (8 * BLOCK));
     }
 
-    if (p == bits_read) {
-        return false;
-    } else {
-        return true;
-    }
+    return true;
 }
 
 void write_code(int outfile, Code *c) {
@@ -81,6 +72,7 @@ void write_code(int outfile, Code *c) {
     //!create static buffer
     //Each bit will be buffered into the buffer
     //The bits will be buffered starting from the 0th bit in c(code)
+    uint8_t buffer[BLOCK];
 
     for (uint32_t i = 0; i < code_size(c); i++) {
         uint8_t bit = (c->bits[i / 8] >> (i % 8) & 0x1);
@@ -111,5 +103,5 @@ void flush_codes(int outfile) {
     if (one_byte > 0) {
         leftover_bytes += 1;
     }
-    write_bytes(outfile, buffer, bytes);
+    write_bytes(outfile, buffer, BLOCK);
 }
