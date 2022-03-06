@@ -3,21 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "code.h"
+#include "code.h" 
 
-typedef struct {
+struct Code {
     uint32_t top;
     uint8_t bits[MAX_CODE_SIZE];
-} Code;
+};
 
 Code code_init(void) {
-
     Code *c = (Code *) malloc(sizeof(Code));
+    *c->bits = *(uint8_t*)calloc(MAX_CODE_SIZE, sizeof(uint8_t));
     c->top = 0;
-    //Zero out the array of bits
-    c->bits[MAX_CODE_SIZE] = { 0 };
 
-    return c;
+    return *c;
 }
 
 uint32_t code_size(Code *c) {

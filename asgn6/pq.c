@@ -1,5 +1,3 @@
-#pragma once
-
 #include "node.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -102,4 +100,5 @@ bool dequeue(PriorityQueue *q, Node **n) {
 
 void pq_print(PriorityQueue *q) {
     //Print priority queue info for debug
+
 }

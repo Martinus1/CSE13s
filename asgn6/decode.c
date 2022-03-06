@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <time.h>
 #include <getopt.h>
-#include <ncurses.h>
 #include <unistd.h>
 
 int main(int argc, char **argv) {
