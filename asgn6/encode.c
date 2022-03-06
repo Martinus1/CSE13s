@@ -5,6 +5,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 #include "code.h"
@@ -82,6 +83,7 @@ int main(int argc, char **argv) {
 
                 for (int i = 0; i < file_bytes_read; i++) {
                     histogram[buffer[i]] += 1;
+                    fprintf(stdout, "%c", buffer[i]);
                 }
 
                 if (file_bytes_read < BLOCK) {
@@ -116,7 +118,11 @@ int main(int argc, char **argv) {
                 }
             }
         }
+
+        fclose(outfile);
     } else {
         fprintf(stderr, "Invalid input. Please provide an input and output file.\n");
     }
+
+    return 0;
 }
