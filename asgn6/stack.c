@@ -1,14 +1,15 @@
-#pragma once
-
 #include "node.h"
+#include "stack.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+
 
 typedef struct Stack Stack {
     uint32_t top;
     uint32_t capacity;
     Node **items;
-};
+}
 
 Stack *stack_create(uint32_t capacity) {
     Stack *s = (Stack *) malloc(sizeof(Stack));
@@ -20,9 +21,9 @@ Stack *stack_create(uint32_t capacity) {
 
 void stack_delete(Stack **s) {
     if (*s) {
-        free(*s->capacity);
-        free(*s->top);
-        free(*s->items);
+        free(s->capacity);
+        free(s->top);
+        free(s->items);
         free(*s);
         *s = NULL;
     }

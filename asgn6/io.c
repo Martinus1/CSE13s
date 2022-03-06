@@ -1,12 +1,13 @@
-#include "code.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "code.h"
+#include "io.h"
 
-extern uint64_t bytes_read;
-extern uint64_t bytes_written;
-extern uint64_t bits_read, bits_added;
+uint64_t bytes_read;
+uint64_t bytes_written;
+uint64_t bits_read, bits_added;
 
 int read_bytes(int infile, uint8_t *buf, int nbytes) {
     //BEHAVIOR
