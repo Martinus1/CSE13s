@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
     }
 
     if (in_file && out_file) {
+        fprintf(stdout, "Encoding files\n");
 
         FILE *infile = fopen(in_file, "r");
         int in_file_fd = fileno(infile);

@@ -68,8 +68,12 @@ void dump_tree(int outfile, Node *root) {
     //Conducts a post-order traversal of the Huffman tree rooted at root, writing it to outfile.
     //This should write an ‘L’ followed by the byte of the symbol for each leaf, and an ‘I’ for interior nodes.
     //Prof. Long Assignment document
-    dump_tree(outfile, root->left);
-    dump_tree(outfile, root->right);
+    if (root->left) {
+        dump_tree(outfile, root->left);
+    }
+    if (root->right) {
+        dump_tree(outfile, root->right);
+    }
 
     if (!root->left && !root->right) {
         // write 'L'
