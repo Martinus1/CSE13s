@@ -1,7 +1,11 @@
 #include "node.h"
 #include "code.h"
 #include "defines.h"
+#include "pq.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
 
 Node *build_tree(uint64_t hist[static ALPHABET]) {
     //construct a huffman tree
@@ -11,9 +15,6 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
     Node *left;
     Node *right;
     PriorityQueue *pq = pq_create(ALPHABET);
-
-    while () {
-    }
 
     return root;
 }
@@ -31,17 +32,21 @@ void dump_tree(int outfile, Node *root) {
 Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]) {
     //Reconstructs a Huffman tree given its post-order tree dump stored in the array tree_dump.
     //The length in bytes of tree_dump is given by nbytes. Returns the root node of the reconstructed tree.
+
 }
 
 void delete_tree(Node **root) {
     //Destructor for huffman tree
     if (*root) {
-        while
-            free(*root->left);
-        free(*root->right);
-        free(*root);
+
+        if ((*root)->left != NULL) {
+            delete_tree(&(*root)->left);
+        }
+
+        if ((*root)->right != NULL) {
+            delete_tree(&(*root)->right);
+        }
 
         node_delete(root);
     }
-    return;
 }

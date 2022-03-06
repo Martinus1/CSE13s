@@ -28,7 +28,7 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
 void node_delete(Node **n) {
     //Node Destructor
     if (*n) {
-        free(n);
+        free(*n);
         *n = NULL;
     }
 }
