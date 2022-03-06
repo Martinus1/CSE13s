@@ -6,11 +6,24 @@
 Node *build_tree(uint64_t hist[static ALPHABET]) {
 	//construct a huffman tree
 	//return the root node of the constructed tree
+	// --- INITIALIZE Vars
+	Node *root;
+	Node  *left;
+	Node *right;
+	PriorityQueue *pq = pq_create(ALPHABET);
+	
+	while () {
+		
+	}
+
+	return root;
 }
 
 void build_codes(Node *root, Code table[static ALPHABET]) {
 	//populates the code table, buliding the code for each symbol of the huffman tree
+	Code c = code_init();
 	
+		
 }
 
 void dump_tree(int outfile, Node *root) {
@@ -26,8 +39,12 @@ Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]) {
 void delete_tree(Node **root) {
 	//Destructor for huffman tree
 	if(*root) {
+		while
+		free(*root->left);
+		free(*root->right);
                 free(*root);
-                *root = NULL;
+
+		node_delete(root);
         }
         return;
 }
