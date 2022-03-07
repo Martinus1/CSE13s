@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        /* flush_codes(out_file_fd); */
+         flush_codes(out_file_fd);
         fclose(outfile);
     } else {
         printf("Invalid input. Please provide an input and output file.\n");

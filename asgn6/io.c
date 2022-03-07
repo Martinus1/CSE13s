@@ -115,6 +115,5 @@ void flush_codes(int outfile) {
     if (one_byte > 0) {
         leftover_bytes += 1;
     }
-    write_bytes(outfile, buffer, BLOCK);
-    memset(buffer, 0, sizeof(buffer));
+    write_bytes(outfile, buffer, leftover_bytes);
 }
