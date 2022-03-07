@@ -49,7 +49,9 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
         Node *left;
         Node *right;
         dequeue(pq, &left);
+        pq_print(pq);
         dequeue(pq, &right);
+        pq_print(pq);
 
         Node *joined = node_join(left, right);
 
@@ -74,23 +76,17 @@ void dump_tree(int outfile, Node *root) {
     //Conducts a post-order traversal of the Huffman tree rooted at root, writing it to outfile.
     //This should write an ‘L’ followed by the byte of the symbol for each leaf, and an ‘I’ for interior nodes.
     //Prof. Long Assignment document
-    if (root->left) {
-        dump_tree(outfile, root->left);
-    }
-    if (root->right) {
-        dump_tree(outfile, root->right);
-    }
 
     if (!root->left && !root->right) {
-        // write 'L'
-        // write(root->symbol)
-        uint8_t bytes[2] = {'L', root->symbol};
-        write_bytes(outfile, bytes, 2);
+        char l = 'L';
+        write_bytes(outfile, &l, 1);
+        write_bytes(outfile, &root->symbol, 1);
     }
     else {
-        // write 'I'
-        uint8_t bytes[1] = {'I'};
-        write_bytes(outfile, bytes, 1);
+        dump_tree(outfile, root->left);
+        dump_tree(outfile, root->right);
+        char i = 'I';
+        write_bytes(outfile, &i, 1);
     }
 }
     

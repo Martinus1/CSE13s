@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include "code.h" 
 
@@ -13,10 +14,7 @@ struct Code {
 Code code_init(void) {
     Code *c = (Code *) malloc(sizeof(Code));
     *c->bits = *(uint8_t*)calloc(MAX_CODE_SIZE, sizeof(uint8_t));
-    //c->bits = { 0 };
-    c->top = 0;
-    //uint8_t b[MAX_CODE_SIZE];
-    //c->bits = *memset(b, 0, MAX_CODE_SIZE); 
+    memset(c->bits, 0, sizeof c->bits);
 
     return *c;
 }

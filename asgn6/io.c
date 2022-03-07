@@ -38,18 +38,20 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     //BEHAVIOR
     //---Writes all the bites onto the disk from the bytes that were read
     //---why? This is becauuse it takes a long time to access the disk, so we don't need to waste time acessing it multiple times
-    bytes_written = 0;
-    int is_writing = 0;
-    while (bytes_written <= (uint64_t) nbytes || is_writing == -1) {
-        is_writing = write(outfile, buf, nbytes);
-        if (is_writing >= 1) {
-            bytes_written += is_writing;
-        } else {
-            is_writing = -1;
+    int number_of_bytes_written = 0;
+
+    while (number_of_bytes_written < (uint64_t) nbytes) {
+        int num_write_call = write(outfile, buf, nbytes);
+
+        if (num_write_call == -1) {
+            return -1;
         }
+
+        number_of_bytes_written += num_write_call;
     }
 
-    return bytes_written;
+    bytes_written += number_of_bytes_written;
+    return number_of_bytes_written;
 }
 
 bool read_bit(int infile, uint8_t *bit) {

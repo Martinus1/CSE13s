@@ -58,13 +58,12 @@ bool enqueue(PriorityQueue *q, Node *n) {
     if (pq_full(q)) {
         return false;
     } else {
-        q->Q[q->tail] = n;
-
-        q->tail += 1;
+        q->Q[q->size] = n;
         q->size += 1;
 
-        heap_sort(q);
-        reverse(q);
+        insertion_sort(q);
+        /* heap_sort(q); */
+        /*reverse(q)*/;
 
         /* uint32_t lowFrequency = UINT32_MAX; */
         /* int index = 0; */
@@ -89,10 +88,13 @@ bool dequeue(PriorityQueue *q, Node **n) {
     if (pq_empty(q)) {
         return false;
     } else {
-        *n = q->Q[q->head];
+        *n = q->Q[0];
+        q->Q[0] = q->Q[q->size-1];
 
-        q->head += 1;
         q->size -= 1;
+
+        insertion_sort(q);
+        reverse(q);
 
         return true;
     }
@@ -111,6 +113,9 @@ void pq_print(PriorityQueue *q) {
         }
     }
 }
+
+
+
 
 int max_child(PriorityQueue *q, int first, int last) {
     int left = 2 * first;
@@ -146,7 +151,7 @@ void build_heap(PriorityQueue *q, int first, int last) {
 }
 
 void heap_sort(PriorityQueue *q) {
-    int first = 1;
+    int first = 0;
     int last = q->size;
     build_heap(q, first, last);
     for (int leaf = last; leaf > 0; leaf -= 1) {
@@ -159,9 +164,29 @@ void heap_sort(PriorityQueue *q) {
 
 // Function to reverse elements of an array
 void reverse(PriorityQueue *q) {
-    for (int low = 0, high = q->size - 1; low < high; low++, high--) {
+    for (int low = 0, high = q->size; low < high; low++, high--) {
         Node* temp = q->Q[low];
         q->Q[low] = q->Q[high];
         q->Q[high] = temp;
     }
 }
+
+void insertion_sort(PriorityQueue *q){
+	for (uint32_t i = 1; i < q->size;  ++i) {
+		int j = i;
+		Node* temp = q->Q[i];
+		//The commented blocks below were created before I started implementing stats
+		//cmp(stats, j, 0);
+		//cmp(stats, temp, A[j-1]);
+		while (j >= 0 && q->Q[j]->frequency > temp->frequency) {
+			//cmp(stats,temp, A[j - 1]);
+			//23cmp(stats, j, 0);
+			q->Q[j] = q->Q[j - 1];
+			j -= 1;
+						
+		}
+		q->Q[j] = temp;
+	}
+}
+
+
