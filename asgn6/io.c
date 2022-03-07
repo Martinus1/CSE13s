@@ -2,12 +2,14 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 #include "code.h"
 #include "io.h"
 
 uint64_t bytes_read;
 uint64_t bytes_written;
 uint64_t bits_read, bits_added;
+uint8_t buffer[BLOCK];
 
 int read_bytes(int infile, uint8_t *buf, int nbytes) {
     //BEHAVIOR
@@ -83,7 +85,6 @@ void write_code(int outfile, Code *c) {
     //!create static buffer
     //Each bit will be buffered into the buffer
     //The bits will be buffered starting from the 0th bit in c(code)
-    uint8_t buffer[BLOCK];
 
     for (uint32_t i = 0; i < code_size(c); i++) {
         uint8_t bit = (c->bits[i / 8] >> (i % 8) & 0x1);
@@ -98,6 +99,7 @@ void write_code(int outfile, Code *c) {
 
         if (bits_added == 0) {
             write_bytes(outfile, buffer, BLOCK);
+            memset(buffer, 0, sizeof(buffer));
             //clear_bites
         }
     }
@@ -108,11 +110,11 @@ void flush_codes(int outfile) {
     //Not guaranteed that buffed codes will alighn nicely with a block
     // Possibility to have leftover bittes used by write_code() after the input has been completely encoded
     // SO -> write out any leftover beffer bits + make sure last buts in the last byte are zeroed out
-    uint8_t buffer[BLOCK];
     uint64_t leftover_bytes = bits_added % ((BLOCK * 8) / 8);
     uint64_t one_byte = (bits_added % 8);
     if (one_byte > 0) {
         leftover_bytes += 1;
     }
     write_bytes(outfile, buffer, BLOCK);
+    memset(buffer, 0, sizeof(buffer));
 }
