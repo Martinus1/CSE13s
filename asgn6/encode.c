@@ -7,7 +7,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <sys/stat.h>
 
+#include "header.h"
 #include "code.h"
 #include "io.h"
 #include "pq.h"
@@ -15,6 +17,28 @@
 #include "huffman.h"
 #include "defines.h"
 #include "header.h"
+#include "defines.h"
+
+
+Header create_header(int symbols, int infile, int outfile) {
+    Header *header;
+    struct stat *statbuf = (struct stat *) malloc(sizeof(stat));
+
+    // Load infile stats into buffer.
+    fstat(infile, statbuf);
+
+    // Copy permissions from stat buffer to outfile header
+    fchmod(outfile, statbuf->st_mode);
+
+    // Set header values from buffer
+    header->tree_size = (3 * symbols) - 1;
+    header->permissions = statbuf->st_mode;
+    header->magic = MAGIC;
+    header->file_size = statbuf->st_size;
+
+    // Deref and return header
+    return *header;
+}
 
 int main(int argc, char **argv) {
 
@@ -71,6 +95,7 @@ int main(int argc, char **argv) {
         //1) Compute Histogram of the file - num of unique occurances of each unique symbol in the file
         //create an array of 0s - size 256
         uint64_t histogram[ALPHABET] = { 0 };
+        int symbols = 2;
 
         histogram[0] += 1;
         histogram[255] += 1;
@@ -84,7 +109,14 @@ int main(int argc, char **argv) {
                 int file_bytes_read = read_bytes(in_file_fd, buffer, BLOCK);
 
                 for (int i = 0; i < file_bytes_read; i++) {
-                    histogram[buffer[i]] += 1;
+                    char symbol = buffer[i];
+
+                    if (histogram[symbol] == 0) {
+                        symbols += 1;
+                    }
+
+                    histogram[symbol] += 1;
+
                     printf("%c", buffer[i]);
                 }
 
@@ -100,6 +132,10 @@ int main(int argc, char **argv) {
         //3) Construct a code table. Each index of the table represents a symbol and the value at th    at index the symbol’s code. You will need to use a stack of bits and perform a traversal of the Huff    man tree.
         Code table[ALPHABET];
         build_codes(root, table);
+
+        //3.5) Create header and write it to file
+        Header header = create_header(symbols, in_file_fd, out_file_fd);
+        write_bytes(out_file_fd, (uint8_t *) &header, sizeof(Header));
 
         //4) Emit an encoding of the Huffman tree to a file. This will be done through a post-order     traversal of the Huffman tree. The encoding of the Huffman tree will be referred to as a tree dump.
         dump_tree(out_file_fd, root);
