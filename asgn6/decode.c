@@ -58,4 +58,36 @@ int main(int argc, char **argv) {
 
     FILE *infile = fopen(in_file, "r");
     FILE *outfile = fopen(out_file, "w");
+
+    // 1) Read Header from infile and verify the magic number
+    // If magic number does not match 0xBEEFBBAD, the invalid file was passed
+    // Display error message and quit
+
+    if (in_file && out_file) {
+          printf("Decoding files\n");
+ 
+          FILE *infile = fopen(in_file, "r");
+          int in_file_fd = fileno(infile);
+          FILE *outfile = fopen(out_file, "w");
+          int out_file_fd = fileno(outfile);	
+ 	//2) permissions filed in the header indicated the permissions that outfile should be set to. Set it with fchmod()
+	fchmod();
+	//3) the size of the dumped tree is given by tree_size field in header
+	// Read Dumped tree from infile into an array tree_size bytes long
+	// reconstruct Huffman tree using rebuild_tree()
+	
+
+	//4) Read infile one bit at a time using read_bit(). You will be traversing down the tree one link ata time for each bit that is read.
+
+	// 5) close infile and outfile
+	fclose(infile);
+	fclose(outfile);
+	
+     } else {
+        printf("Invalid input. Please provide an input and output file.\n");
+     }
+
+ return 0;	
+
+
 }
