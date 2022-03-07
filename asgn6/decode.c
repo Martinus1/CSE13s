@@ -70,15 +70,25 @@ int main(int argc, char **argv) {
           int in_file_fd = fileno(infile);
           FILE *outfile = fopen(out_file, "w");
           int out_file_fd = fileno(outfile);	
- 	//2) permissions filed in the header indicated the permissions that outfile should be set to. Set it with fchmod()
-	fchmod();
+	 
+	  Header h;
+	  read_bytes(in_file_fd, (uint8_t *) h, sizeof(Header));
+	  
+	  if (h->magic != MAGIC) {
+		fprintf(stderr, "Magic number is not the same as in header file\n");	
+	  } 	
+//2) permissions filed in the header indicated the permissions that outfile should be set to. Set it with fchmod(int filedes, mode_t mode)
+	fchmod(out_file_fd, h->permissions);
+	
 	//3) the size of the dumped tree is given by tree_size field in header
 	// Read Dumped tree from infile into an array tree_size bytes long
 	// reconstruct Huffman tree using rebuild_tree()
+	//rebuild_tree(h->tree_size, );
 	
 
 	//4) Read infile one bit at a time using read_bit(). You will be traversing down the tree one link ata time for each bit that is read.
-
+	
+	
 	// 5) close infile and outfile
 	fclose(infile);
 	fclose(outfile);
