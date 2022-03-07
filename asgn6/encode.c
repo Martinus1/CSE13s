@@ -106,12 +106,14 @@ int main(int argc, char **argv) {
 
         //5) Step through each symbol of the input file again. For each symbol, emit its code to the     output file
         {
+            rewind(infile);
             uint8_t buffer[BLOCK] = { 0 };
             bool done = false;
             while (!done) {
                 int file_bytes_read = read_bytes(in_file_fd, buffer, BLOCK);
 
                 for (int i = 0; i < file_bytes_read; i++) {
+                    printf("%c", buffer[i]);
                     write_code(out_file_fd, &table[buffer[i]]);
                 }
 
@@ -121,7 +123,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        flush_codes(out_file_fd);
+         flush_codes(out_file_fd);
         fclose(outfile);
     } else {
         printf("Invalid input. Please provide an input and output file.\n");
