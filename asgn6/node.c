@@ -37,7 +37,17 @@ Node *node_join(Node *left, Node *right) {
 
 void node_print(Node *n) {
     //Debug Function
-    printf("Debug Node \n");
-    printf("Node symbol: %u\n ", n->symbol);
-    printf("Node frequency: %lu\n ", n->frequency);
+    printf("Debug Node\n");
+    printf("Node symbol: '%c'\n", n->symbol);
+    printf("Node frequency: %lu\n", n->frequency);
+    printf("\n");
+
+    if (n->left) {
+        node_print(n->left);
+    }
+
+    if (n->right) {
+        node_print(n->right);
+    }
+
 }

@@ -43,18 +43,23 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
         }
     }
 
+    pq_print(pq);
+
     while (pq_size(pq) >= 2) {
         Node *left;
         Node *right;
         dequeue(pq, &left);
         dequeue(pq, &right);
 
-        enqueue(pq, node_join(left, right));
+        Node *joined = node_join(left, right);
+
+        enqueue(pq, joined);
     }
 
     Node *root;
     dequeue(pq, &root);
 
+    node_print(root);
     return root;
 }
 

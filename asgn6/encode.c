@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
             bool done = false;
 
             while (!done) {
+                fprintf(stdout, "Reading file chunk.\n");
                 int file_bytes_read = read_bytes(in_file_fd, buffer, BLOCK);
 
                 for (int i = 0; i < file_bytes_read; i++) {
@@ -120,6 +121,7 @@ int main(int argc, char **argv) {
             }
         }
 
+        flush_codes(out_file_fd);
         fclose(outfile);
     } else {
         fprintf(stderr, "Invalid input. Please provide an input and output file.\n");

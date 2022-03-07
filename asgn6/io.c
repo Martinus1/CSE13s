@@ -12,18 +12,26 @@ uint64_t bits_read, bits_added;
 int read_bytes(int infile, uint8_t *buf, int nbytes) {
     //BEHAVIOR
     //---Reads all bites and returns how many bites have been read
-    bytes_read = 0;
-    int is_reading = 0;
-    while (bytes_read <= (uint64_t) nbytes || is_reading == -1) {
-        is_reading = read(infile, buf, nbytes);
-        if (is_reading >= 1) {
-            bytes_read += is_reading;
-        } else {
-            is_reading = -1;
+    int number_of_bytes_read = 0;
+    bool eof = false;
+
+    while (!eof && number_of_bytes_read <= nbytes) {
+        int num_read_call = read(infile, buf, nbytes);
+
+        if (num_read_call == -1) {
+            return -1;
         }
+
+        if (num_read_call == 0) {
+            // EOF
+            eof = true;
+        }
+
+        number_of_bytes_read += num_read_call;
     }
 
-    return bytes_read;
+    bytes_read += number_of_bytes_read;
+    return number_of_bytes_read;
 }
 
 int write_bytes(int outfile, uint8_t *buf, int nbytes) {
