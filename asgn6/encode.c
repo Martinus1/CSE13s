@@ -47,13 +47,13 @@ int main(int argc, char **argv) {
 
     //print HELP
     if (isHelp) {
-        fprintf(stderr, "SYNOPSIS:\n");
-        fprintf(stderr, "---USAGE---\n");
-        fprintf(stderr, "./decode [options]\n");
-        fprintf(stderr, " -i   Specifies the input file\n");
-        fprintf(stderr, " -o   Specifies the output file\n");
-        fprintf(stderr, " -v   prints compression statistics to stderr\n");
-        fprintf(stderr, " -h   prints program synopsis\n");
+        printf("SYNOPSIS:\n");
+        printf("---USAGE---\n");
+        printf("./decode [options]\n");
+        printf(" -i   Specifies the input file\n");
+        printf(" -o   Specifies the output file\n");
+        printf(" -v   prints compression statistics to stderr\n");
+        printf(" -h   prints program synopsis\n");
     }
 
     //Print Verbose
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     }
 
     if (in_file && out_file) {
-        fprintf(stdout, "Encoding files\n");
+        printf("Encoding files\n");
 
         FILE *infile = fopen(in_file, "r");
         int in_file_fd = fileno(infile);
@@ -80,12 +80,12 @@ int main(int argc, char **argv) {
             bool done = false;
 
             while (!done) {
-                fprintf(stdout, "Reading file chunk.\n");
+                printf("Reading file chunk.\n");
                 int file_bytes_read = read_bytes(in_file_fd, buffer, BLOCK);
 
                 for (int i = 0; i < file_bytes_read; i++) {
                     histogram[buffer[i]] += 1;
-                    fprintf(stdout, "%c", buffer[i]);
+                    printf("%c", buffer[i]);
                 }
 
                 if (file_bytes_read < BLOCK) {
@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
         flush_codes(out_file_fd);
         fclose(outfile);
     } else {
-        fprintf(stderr, "Invalid input. Please provide an input and output file.\n");
+        printf("Invalid input. Please provide an input and output file.\n");
     }
 
     return 0;

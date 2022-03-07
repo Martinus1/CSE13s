@@ -63,6 +63,9 @@ bool enqueue(PriorityQueue *q, Node *n) {
         q->tail += 1;
         q->size += 1;
 
+        heap_sort(q);
+        reverse(q);
+
         /* uint32_t lowFrequency = UINT32_MAX; */
         /* int index = 0; */
         /* for (uint32_t i = 0; i <= q->size; i++) { */
@@ -107,5 +110,58 @@ void pq_print(PriorityQueue *q) {
             node_print(q->Q[i]);
         }
     }
+}
 
+int max_child(PriorityQueue *q, int first, int last) {
+    int left = 2 * first;
+    int right = left + 1;
+    if (right <= last && (q->Q[right - 1]->frequency > q->Q[left - 1]->frequency)) {
+        return right;
+    }
+    return left;
+}
+
+void fix_heap(PriorityQueue *q, int first, int last) {
+    bool found = false;
+    int mother = first;
+    int great = max_child(q, mother, last);
+
+    while ((mother <= (last / 2)) && (found == false)) {
+        if (q->Q[mother - 1]->frequency < q->Q[great - 1]->frequency) {
+            Node *temp = q->Q[mother - 1];
+            q->Q[mother - 1] = q->Q[great - 1];
+            q->Q[great - 1] = temp;
+            mother = great;
+            great = max_child(q, mother, last);
+        } else {
+            found = true;
+        }
+    }
+}
+
+void build_heap(PriorityQueue *q, int first, int last) {
+    for (int father = (last / 2); father < (first - 1); father -= 1) {
+        fix_heap(q, father, last);
+    }
+}
+
+void heap_sort(PriorityQueue *q) {
+    int first = 1;
+    int last = q->size;
+    build_heap(q, first, last);
+    for (int leaf = last; leaf > 0; leaf -= 1) {
+        Node *temp = q->Q[first - 1];
+        q->Q[first - 1] = q->Q[leaf - 1];
+        q->Q[leaf - 1] = temp;
+        fix_heap(q, first, leaf - 1);
+    }
+}
+
+// Function to reverse elements of an array
+void reverse(PriorityQueue *q) {
+    for (int low = 0, high = q->size - 1; low < high; low++, high--) {
+        Node* temp = q->Q[low];
+        q->Q[low] = q->Q[high];
+        q->Q[high] = temp;
+    }
 }

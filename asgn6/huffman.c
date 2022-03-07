@@ -59,7 +59,6 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
     Node *root;
     dequeue(pq, &root);
 
-    node_print(root);
     return root;
 }
 
