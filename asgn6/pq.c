@@ -29,7 +29,7 @@ void pq_delete(PriorityQueue **q) {
     //Set pointer to Null after freeing the memory
     if (*q) {
         free((*q)->Q);
-        free(q);
+        free(*q);
         *q = NULL;
     }
     return;

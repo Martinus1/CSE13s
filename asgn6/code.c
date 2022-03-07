@@ -13,7 +13,10 @@ struct Code {
 Code code_init(void) {
     Code *c = (Code *) malloc(sizeof(Code));
     *c->bits = *(uint8_t*)calloc(MAX_CODE_SIZE, sizeof(uint8_t));
+    //c->bits = { 0 };
     c->top = 0;
+    //uint8_t b[MAX_CODE_SIZE];
+    //c->bits = *memset(b, 0, MAX_CODE_SIZE); 
 
     return *c;
 }
