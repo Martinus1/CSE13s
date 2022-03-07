@@ -81,8 +81,7 @@ void dump_tree(int outfile, Node *root) {
         char l = 'L';
         write_bytes(outfile, &l, 1);
         write_bytes(outfile, &root->symbol, 1);
-    }
-    else {
+    } else {
         dump_tree(outfile, root->left);
         dump_tree(outfile, root->right);
         char i = 'I';
