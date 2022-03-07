@@ -59,6 +59,8 @@ Node *build_tree(uint64_t hist[static ALPHABET]) {
     Node *root;
     dequeue(pq, &root);
 
+    fprintf(stdout, "Printing Huffman Tree\n");
+    node_print(root);
     return root;
 }
 
