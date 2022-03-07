@@ -14,7 +14,7 @@ int read_bytes(int infile, uint8_t *buf, int nbytes) {
     //---Reads all bites and returns how many bites have been read
     bytes_read = 0;
     int is_reading = 0;
-    while (bytes_read == (uint64_t) nbytes || is_reading == -1) {
+    while (bytes_read <= (uint64_t) nbytes || is_reading == -1) {
         is_reading = read(infile, buf, nbytes);
         if (is_reading >= 1) {
             bytes_read += is_reading;
@@ -32,7 +32,7 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     //---why? This is becauuse it takes a long time to access the disk, so we don't need to waste time acessing it multiple times
     bytes_written = 0;
     int is_writing = 0;
-    while (bytes_written == (uint64_t) nbytes || is_writing == -1) {
+    while (bytes_written <= (uint64_t) nbytes || is_writing == -1) {
         is_writing = write(outfile, buf, nbytes);
         if (is_writing >= 1) {
             bytes_written += is_writing;
