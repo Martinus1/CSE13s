@@ -1,8 +1,17 @@
+#include "node.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "pq.h"
+
+typedef struct PriorityQueue PriorityQueue;
+
 struct PriorityQueue PriorityQueue {
     uint32_t size;
     uint32_t head, tail;
+    uint32_t capacity;
+    Node **Q;   
 };
 
 
@@ -56,22 +65,22 @@ bool enqueue(PriorityQueue *q, char *author, double dist) {
         q->size += 1;
 
         insertion_sort(q);
-        /* heap_sort(q); */
-        /*reverse(q)*/;
+        // heap_sort(q);
+        reverse(q);
 
-        /* uint32_t lowFrequency = UINT32_MAX; */
-        /* int index = 0; */
-        /* for (uint32_t i = 0; i <= q->size; i++) { */
-        /*     if (q->Q[i] && q->Q[i]->frequency < lowFrequency) { */
-        /*         lowFrequency = q->Q[i]->frequency; */
-        /*         index = i; */
-        /*     } */
-        /* } */
+         uint32_t lowFrequency = UINT32_MAX; 
+         int index = 0; 
+         for (uint32_t i = 0; i <= q->size; i++) { 
+             if (q->Q[i] && q->Q[i]->frequency < lowFrequency) { 
+                 lowFrequency = q->Q[i]->frequency; 
+                 index = i; 
+             } 
+         } 
 
-        /* //Move everything forward after the index; */
-        /* q->Q[index] = n; */
+         //Move everything forward after the index; */
+         q->Q[index] = n; 
 
-        return true;
+         return true;
     }
 }
 
@@ -108,3 +117,34 @@ void pq_print(PriorityQueue *q) {
         }
     }
 }
+
+
+void insertion_sort(PriorityQueue *q){
+	for (uint32_t i = 1; i < q->size;  ++i) {
+		int j = i;
+		Node* temp = q->Q[i];
+		//The commented blocks below were created before I started implementing stats
+		//cmp(stats, j, 0);
+		//cmp(stats, temp, A[j-1]);
+		while (j >= 0 && q->Q[j]->frequency > temp->frequency) {
+			//cmp(stats,temp, A[j - 1]);
+			//23cmp(stats, j, 0);
+			q->Q[j] = q->Q[j - 1];
+			j -= 1;
+						
+		}
+		q->Q[j] = temp;
+	}
+}
+
+// Function to reverse elements of an array
+void reverse(PriorityQueue *q) {
+    for (int low = 0, high = q->size; low < high; low++, high--) {
+        Node* temp = q->Q[low];
+        q->Q[low] = q->Q[high];
+        q->Q[high] = temp;
+    }
+}
+
+
+

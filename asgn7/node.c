@@ -4,13 +4,12 @@
 #include <inttypes.h>
 #include "node.h"
 
-
-typedef struct Node Node;
-
+/*
 struct Node {
     char *word;
     uint32_t count;
 };
+*/
 
 Node *node_create(char *word) {
 	Node *n = (Node *) malloc(sizeof(Node));

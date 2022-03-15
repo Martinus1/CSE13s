@@ -1,11 +1,11 @@
 cc = clang-format
-CFLAGS = -Wall -Wextra -Werror -Wpedantic -g
+CFLAGS = -Wall -Wextra -Wpedantic -g
 
 .PHONY: all clean
 
-all: indentify
+all: identify
 
-identify: bf.o bv.o bt.o node.o ht.o pq.o parser.o identify.o
+identify: bf.o bv.o node.o ht.o pq.o parser.o identify.o
 	$(CC) bf.o bv.o bt.o node.o pq.o parser.o -o identify identify.o
 
 node.o: node.c node.h
@@ -26,14 +26,16 @@ bv.o: bv.c bv.h
 parser.o: parser.c parser.h
 	$(CC) $(CFLAGS) -c parser.c -o parser.o
 
-speck.c: speck.h speck.c
+speck.o: speck.h speck.c
 	$(CC) $(CFLAGS) -c speck.c -o speck.o
 
-text.c: text.h text.c
+text.o: text.h text.c
 	$(CC) $(CFLAGS) -c text.c -o text.o
 
 
 format:
 	clang-format -i -style=file *[c,h]
 
-
+clean:
+	rm -f identify identify.o
+	rm -f node.o ht.o pq.o bf.o bv.o parser.o speck.o text.o
